@@ -74,3 +74,22 @@
     @apply bg-background text-foreground;
   }
 }
+
+:root {
+  overflow-x: hidden;
+}
+
+main::--webkit-scrollbar {
+  width: 0.5rem;
+}
+
+main::--webkit-scrollbar-thumb {
+  background-color: var(red);
+  border-radius: 0.25rem;
+}
+
+main::--webkit-scrollbar-track {
+  background-color: var(--background);
+  border-radius: 0.25rem;
+}
+
