@@ -1,55 +1,79 @@
+'use client'
 import Link from "next/link";
-import { headers } from "next/headers";
-import { createClient } from "@/utils/supabase/server";
-import { redirect } from "next/navigation";
-import { SubmitButton } from "./submit-button";
+import { redirect, useRouter } from "next/navigation";
+import { Button } from "@/components/ui/button";
+import {
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form"
+import { Input } from "@/components/ui/input"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { z } from "zod"
+import { useForm } from "react-hook-form"
+import { toast } from "@/components/ui/use-toast";
+import { ToastAction } from "@/components/ui/toast";
+import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 
-export default function Login({
-  searchParams,
-}: {
-  searchParams: { message: string };
-}) {
-  const signIn = async (formData: FormData) => {
-    "use server";
+const signInSchema = z.object({
+  email: z.string().email({
+    message: "Invalid email address",
+  }).endsWith("@srmist.edu.in", {
+    message: "Invalid email address: must be an SRMIST email address",
+  }),
+  password: z.string().min(8, {
+    message: "Password must be at least 8 characters",
+  }).regex(/[A-Z]/, {
+    message: "Password must contain at least one uppercase letter",
+  }).regex(/[a-z]/, {
+    message: "Password must contain at least one lowercase letter",
+  }).regex(/[0-9]/, {
+    message: "Password must contain at least one number",
+  })
+});
 
-    const email = formData.get("email") as string;
-    const password = formData.get("password") as string;
-    const supabase = createClient();
+  export default function Login() {
 
-    const { error } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    });
+    const router = useRouter();
+    const supabase = createClientComponentClient();
 
-    if (error) {
-      return redirect("/login?message=Could not authenticate user");
-    }
-
-    return redirect("/protected");
-  };
-
-  const signUp = async (formData: FormData) => {
-    "use server";
-
-    const origin = headers().get("origin");
-    const email = formData.get("email") as string;
-    const password = formData.get("password") as string;
-    const supabase = createClient();
-
-    const { error } = await supabase.auth.signUp({
-      email,
-      password,
-      options: {
-        emailRedirectTo: `${origin}/auth/callback`,
+    const signInForm = useForm<z.infer<typeof signInSchema>>({
+      resolver: zodResolver(signInSchema),
+      defaultValues: {
+        email: "",
+        password: "",
       },
-    });
+    })
 
-    if (error) {
-      return redirect("/login?message=Could not authenticate user");
-    }
 
-    return redirect("/login?message=Check email to continue sign in process");
-  };
+    
+
+
+  // const signUp = async (formData: FormData) => {
+
+  //   const email = formData.get("email") as string;
+  //   const password = formData.get("password") as string;
+    
+
+  //   const { error } = await supabase.auth.signUp({
+  //     email,
+  //     password,
+  //     options: {
+  //       emailRedirectTo: `${origin}/auth/callback`,
+  //     },
+  //   });
+
+  //   if (error) {
+  //     console.log("Could not authenticate user");
+  //     return redirect("/login?message=Could not authenticate user");
+  //   }
+  //   console.log("Check email to continue sign in process");
+  //   return redirect("/login?message=Check email to continue sign in process");
+  // };
 
   return (
     <main className=" flex flex-col w-screen h-screen px-8 items-center justify-center gap-2 bg-black bg-grid-white/[0.2] ">
@@ -75,49 +99,37 @@ export default function Login({
         Back
       </Link>
       <div className="animate-in items-center flex flex-col md:w-6/12 justify-center gap-2 text-white ">
-        <form className="animate-in flex-1 flex flex-col w-full h-fit justify-center gap-2 text-white backdrop-blur-[0.7px] p-4 rounded-lg border border-gray-500">
-          <label className="text-md" htmlFor="email">
-            Email
-          </label>
-          <input
-            className="rounded-md px-4 py-2 bg-inherit border mb-6"
-            name="email"
-            placeholder="you@example.com"
-            required
-          />
-          <label className="text-md" htmlFor="password">
-            Password
-          </label>
-          <input
-            className="rounded-md px-4 py-2 bg-inherit border mb-6"
-            type="password"
-            name="password"
-            placeholder="••••••••"
-            required
-          />
-          <SubmitButton
-            formAction={signIn}
-            className="bg-green-700 hover:bg-green-900 rounded-md px-4 py-2 text-foreground mb-2 transition-all duration-150 ease-in-out"
-            pendingText="Signing In..."
-          >
-            Sign In
-          </SubmitButton>
-          <p className="w-full text-center">
-            Or
-          </p>
-          <SubmitButton
-            formAction={signUp}
-            className="border border-white hover:bg-neutral-700 text-white rounded-md px-4 py-2 text-foreground mb-2 transition-all duration-150 ease-in-out"
-            pendingText="Signing Up..."
-          >
-            Sign Up
-          </SubmitButton>
-          {searchParams?.message && (
-            <p className="mt-4 p-4 bg-foreground/10 text-foreground text-center">
-              {searchParams.message}
-            </p>
-          )}
-        </form>
+        <Form {...signInForm}>
+          <form action="/auth/login" method="post" className="animate-in flex-1 flex flex-col w-full h-fit justify-center gap-6 text-white backdrop-blur-[0.7px] p-4 rounded-lg border border-gray-500">
+            <FormField
+              control={signInForm.control}
+              name="email"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Email</FormLabel>
+                  <FormControl>
+                    <Input type="email" className="text-black" placeholder="@srmist.edu.in" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={signInForm.control}
+              name="password"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Password</FormLabel>
+                  <FormControl>
+                    <Input type="password" className="text-black" placeholder="......"  {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <Button variant='ghost' type="submit">Submit</Button>
+          </form>
+        </Form>
       </div>
     </main>
   );
