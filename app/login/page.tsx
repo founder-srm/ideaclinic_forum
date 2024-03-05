@@ -38,9 +38,6 @@ const signInSchema = z.object({
 
   export default function Login() {
 
-    const router = useRouter();
-    const supabase = createClientComponentClient();
-
     const signInForm = useForm<z.infer<typeof signInSchema>>({
       resolver: zodResolver(signInSchema),
       defaultValues: {
@@ -49,31 +46,6 @@ const signInSchema = z.object({
       },
     })
 
-
-    
-
-
-  // const signUp = async (formData: FormData) => {
-
-  //   const email = formData.get("email") as string;
-  //   const password = formData.get("password") as string;
-    
-
-  //   const { error } = await supabase.auth.signUp({
-  //     email,
-  //     password,
-  //     options: {
-  //       emailRedirectTo: `${origin}/auth/callback`,
-  //     },
-  //   });
-
-  //   if (error) {
-  //     console.log("Could not authenticate user");
-  //     return redirect("/login?message=Could not authenticate user");
-  //   }
-  //   console.log("Check email to continue sign in process");
-  //   return redirect("/login?message=Check email to continue sign in process");
-  // };
 
   return (
     <main className=" flex flex-col w-screen h-screen px-8 items-center justify-center gap-2 bg-black bg-grid-white/[0.2] ">

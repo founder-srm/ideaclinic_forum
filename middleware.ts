@@ -15,11 +15,7 @@ export async function middleware(req: NextRequest) {
     data: { user },
   } = await supabase.auth.getUser()
 
-   // if user is signed in and the current path is / redirect the user to /account
-   if (user && req.nextUrl.pathname === '/') {
-    return NextResponse.redirect(new URL('/forum', req.url))
-  }
-
+   
 
   return res
 }
@@ -35,5 +31,5 @@ export const config = {
      * Feel free to modify this pattern to include more paths.
      */
     "/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)",
-  ],
-};
+    ],
+  };

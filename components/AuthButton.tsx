@@ -25,8 +25,11 @@ export default async function AuthButton() {
     data: { user },
   } = await supabase.auth.getUser()
 
+  
+
   return session && user ? (
     <div className="flex flex-row items-center justify-end gap-4">
+      {user.email}
       <DropdownMenu>
         <DropdownMenuTrigger>
           <Avatar>
@@ -55,20 +58,17 @@ export default async function AuthButton() {
         </DropdownMenuContent>
       </DropdownMenu>
 
-      <form action="/auth/logout" method="get">
+      <form action="/auth/logout" method="post">
         <Button variant='outline' className="py-2 px-4 rounded-md hover:text-gray-500 no-underline bg-btn-background hover:bg-btn-background-hover">
           Logout
         </Button>
       </form>
     </div>
   ) : (
-    <Link
-      href="/login"
-      className="py-2 px-3 flex rounded-md no-underline bg-btn-background hover:bg-btn-background-hover"
-    >
-      <Button variant='outline' className=" bg-[#080808]">
+    <Link href="/login">
+      {/* <Button variant='outline' className="py-2 px-4 rounded-md hover:text-gray-500 no-underline bg-btn-background hover:bg-btn-background-hover"> */}
         Login
-      </Button>
+      {/* </Button> */}
     </Link>
-  );
+  )
 }

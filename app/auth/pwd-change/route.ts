@@ -1,0 +1,20 @@
+
+import { createRouteHandlerClient } from '@supabase/auth-helpers-nextjs'
+import { redirect } from 'next/dist/server/api-utils'
+import { cookies } from 'next/headers'
+import { NextResponse } from 'next/server'
+
+export async function POST(request: Request) {
+  const requestUrl = new URL(request.url)
+  const formData = await request.formData()
+  const newPassword = String(formData.get('password'))
+
+  const cookieStore = cookies()
+  const supabase = createRouteHandlerClient({ cookies: () => cookieStore })
+
+  await supabase.auth.updateUser({ password: newPassword})
+
+  return NextResponse.redirect(`/forum`, {
+    status: 301,
+  })
+}

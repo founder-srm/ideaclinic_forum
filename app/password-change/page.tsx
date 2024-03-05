@@ -1,27 +1,54 @@
+'use client'
 import Link from "next/link";
-import { SubmitButton } from "../login/submit-button";
-import { createClient } from "@/utils/supabase/server";
-import { headers } from "next/headers";
-import { redirect } from "next/navigation";
-import { supabase } from "@/lib/supabase";
+import { z } from "zod";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 
-export default function Page({
-    searchParams,
-  }: {
-    searchParams: { message: string };
-  }) {
+import { Button } from "@/components/ui/button"
+import {
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form"
+import { Input } from "@/components/ui/input"
 
-    const changePassword = async (formData: FormData) => {
-        
+const changePasswordSchema = z.object({
+    password: z.string().min(8, {
+        message: "Password must be at least 8 characters",
+      }).regex(/[A-Z]/, {
+        message: "Password must contain at least one uppercase letter",
+      }).regex(/[a-z]/, {
+        message: "Password must contain at least one lowercase letter",
+      }).regex(/[0-9]/, {
+        message: "Password must contain at least one number",
+      })
+})
 
-        const password = formData.get("password") as string;
-        const { error } = await supabase.auth.updateUser({ password: password })
+export default function Page() {
 
-        if (error) {
-            return redirect("/password-change?message=Could not change password");
-        }
-        return redirect("/forum");
-    }
+    const changePasswordForm = useForm<z.infer<typeof changePasswordSchema>>({
+        resolver: zodResolver(changePasswordSchema),
+        defaultValues: {
+            password: "",
+        },
+    
+    })        
+    
+    // const changePassword = async (values: z.infer<typeof changePasswordSchema>) => {
+
+
+    //     const password = values.password;
+    //     const { error } = await supabase.auth.updateUser({ password: password })
+
+    //     if (error) {
+    //         return redirect("/password-change?message=Could not change password");
+    //     }
+    //     return redirect("/forum");
+    // }
 
 
     return(
@@ -48,32 +75,28 @@ export default function Page({
                 Back
             </Link>
             <div className="animate-in items-center flex flex-col md:w-6/12 justify-center gap-2 text-white ">
-                <form className="animate-in flex-1 flex flex-col w-full h-fit justify-center gap-2 text-white backdrop-blur-[0.7px] p-4 rounded-lg border border-gray-500">
-                    <label className="text-md" htmlFor="password">
-                        Password
-                    </label>
-                    <input
-                        className="rounded-md px-4 py-2 bg-inherit border mb-6"
-                        type="password"
+                <Form {...changePasswordForm}>
+                    <form action="/auth/pwd-change" method="post"  className="animate-in flex-1 flex flex-col w-full h-fit justify-center gap-2 text-white backdrop-blur-[0.7px] p-4 rounded-lg border border-gray-500">
+                        <FormField
+                        control={changePasswordForm.control}
                         name="password"
-                        placeholder="••••••••"
-                        required
-                    />
-                    <SubmitButton
-                        formAction={changePassword}
-                        className="bg-green-700 hover:bg-green-900 rounded-md px-4 py-2 text-foreground mb-2 transition-all duration-150 ease-in-out"
-                        pendingText="Changing..."
-                    >
-                        Change password
-                    </SubmitButton>
-                    
-                    {searchParams?.message && (
-                        <p className="mt-4 p-4 bg-foreground/10 text-white text-center">
-                        {searchParams.message}
-                        </p>
-                    )}
-                </form>
+                        render={({ field }) => (
+                            <FormItem>
+                            <FormLabel>New Password</FormLabel>
+                            <FormControl> 
+                                <Input type="password" className="text-black" placeholder="......." {...field} />
+                            </FormControl>
+                            <FormDescription>
+                                This is your new password. Don't forget it!
+                            </FormDescription>
+                            <FormMessage />
+                            </FormItem>
+                        )}
+                        />
+                        <Button variant='destructive' type="submit">Change Password</Button>
+                    </form>
+                </Form>
             </div>
-            </main>
+        </main>
     )
 }
