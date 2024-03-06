@@ -1,6 +1,5 @@
 
 import { createRouteHandlerClient } from '@supabase/auth-helpers-nextjs'
-import { redirect } from 'next/dist/server/api-utils'
 import { cookies } from 'next/headers'
 import { NextResponse } from 'next/server'
 
@@ -14,7 +13,7 @@ export async function POST(request: Request) {
 
   await supabase.auth.updateUser({ password: newPassword})
 
-  return NextResponse.redirect(`/forum`, {
+  return NextResponse.redirect(`${requestUrl.origin}/forum`, {
     status: 301,
   })
 }
