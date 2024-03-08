@@ -1,3 +1,4 @@
+
 import { createClientComponentClient, createServerComponentClient } from "@supabase/auth-helpers-nextjs";
 import Link from "next/link";
 import { redirect } from "next/navigation";
@@ -37,7 +38,7 @@ export default async function AuthButton() {
             <AvatarFallback>CN</AvatarFallback>
           </Avatar>
         </DropdownMenuTrigger>
-        <DropdownMenuContent className="bg-[#333333] text-white">
+        <DropdownMenuContent className="bg-[#333333] text-white m-0 p-0">
           <DropdownMenuLabel>
               My Account
           </DropdownMenuLabel>
