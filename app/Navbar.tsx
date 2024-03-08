@@ -66,7 +66,7 @@ function NavbarFixed({
             clip-rule="evenodd"
           ></path>
         </svg>
-        <p className="text-xl text-white">Forum</p>
+        <p className="text-xl text-white">IDEA Clinic</p>
       </div>
       <ul className="flex gap-8 items-center text-white/50 ">
         <li className="px-2 text-md transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 duration-300 hover:text-white">

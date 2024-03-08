@@ -50,12 +50,11 @@ export default async function AuthButton() {
             </Link>  
           </DropdownMenuItem>
           <DropdownMenuItem><PlusCircleIcon className="w-[12px] mr-1"/> New Post</DropdownMenuItem>
-          <DropdownMenuItem>
-            <Link href='/password-change' className="flex items-center">
+          <DropdownMenuItem >
+            <Link href='/password-change' className="flex items-center ">
               Change Password
             </Link> 
           </DropdownMenuItem>
-          <DropdownMenuItem>Subscription</DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
 
