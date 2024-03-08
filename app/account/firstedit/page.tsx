@@ -113,7 +113,7 @@ export default function Page() {
                     title: "Profile updated successfully",
                     description: "Your profile has been updated.",
                 })
-                router.push('/account');
+                router.push('/password-change');
             }
             console.log(data);
         } catch (error) {
