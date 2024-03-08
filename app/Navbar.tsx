@@ -2,12 +2,17 @@
 import React, { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { motion, AnimatePresence } from 'framer-motion'
+import AuthButton from '@/components/AuthButton'
 
 interface NavbarScrollProps {
   isScrolling: boolean
 }
 
-export default function Navbar() {
+export default function Navbar( {
+  children,
+}: {
+  children: React.ReactNode
+}) {
   const [isScrolling, setIsScrolling] = useState(false)
 
   const handleScroll = () => {
@@ -31,14 +36,18 @@ export default function Navbar() {
         {isScrolling ? (
           <NavbarScroll isScrolling={isScrolling} />
         ) : (
-          <NavbarFixed />
+          <NavbarFixed children={children} />
         )}
       </AnimatePresence>
     </>
   )
 }
 
-function NavbarFixed() {
+function NavbarFixed({
+  children,
+}: {
+  children: React.ReactNode
+}) {
   return (
     <nav className="fixed z-10 flex justify-between w-full px-8 py-2 top-4">
       <div className="flex items-center gap-2 text-white">
@@ -68,7 +77,9 @@ function NavbarFixed() {
         </li>
       </ul>
       <div className="px-4 py-2 ml-2 text-white bg-black rounded-full text-md transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 duration-300">
-        <Link href={'/login'}>Login/Sign Up</Link>
+        {/* <Link href={'/login'}>Login/Sign Up</Link> */}
+        {/* <AuthButton /> */}
+        {children}
       </div>
     </nav>
   )

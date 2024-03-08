@@ -76,7 +76,7 @@ export default async function Index() {
 
   return (
     <main className="flex-1 w-screen h-auto flex flex-col gap-20 items-center bg-[#090909] text-white">
-      <Navbar />
+      {/* <Navbar /> */}
       <HeroParallax products={ProductList} />
       <section>
         <InfiniteMovingTestimonials />
