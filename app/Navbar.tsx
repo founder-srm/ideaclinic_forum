@@ -70,15 +70,13 @@ function NavbarFixed({
       </div>
       <ul className="flex gap-8 items-center text-white/50 ">
         <li className="px-2 text-md transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 duration-300 hover:text-white">
-          <Link href={'/'}>Team</Link>
+          <Link href={'/team'}>Team</Link>
         </li>
         <li className="px-2 text-md transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 duration-300 hover:text-white">
-          <Link href={'/'}>Forum</Link>
+          <Link href={'/forum'}>Forum</Link>
         </li>
       </ul>
       <div className="px-4 py-2 ml-2 text-white bg-black rounded-full text-md transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 duration-300">
-        {/* <Link href={'/login'}>Login/Sign Up</Link> */}
-        {/* <AuthButton /> */}
         {children}
       </div>
     </nav>
@@ -97,10 +95,10 @@ function NavbarScroll({ isScrolling }: NavbarScrollProps) {
     >
       <ul className="flex items-center">
         <li className="px-2 text-white text-md">
-          <Link href={'/pods'}>Team</Link>
+          <Link href={'/team'}>Team</Link>
         </li>
         <li className="px-2 text-white text-md">
-          <Link href={'/'}>Forum</Link>
+          <Link href={'/forum'}>Forum</Link>
         </li>
         <li className="px-4 py-2 ml-2 text-white bg-black rounded-full text-md ">
           <Link href={'/login'}>Login/Sign Up</Link>
