@@ -92,4 +92,10 @@ main::--webkit-scrollbar-track {
   background-color: var(--background);
   border-radius: 0.25rem;
 }
+.ts-bg {
+  background: rgba(246, 246, 246, 0.36);
+  mix-blend-mode: luminosity;
+  box-shadow: 0px 0px 6px 0px rgba(0, 0, 0, 0.15);
+  backdrop-filter: blur(67.95704650878906px);
+}
 
