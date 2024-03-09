@@ -50,7 +50,7 @@ function NavbarFixed({
 }) {
   return (
     <nav className="fixed z-10 flex justify-between w-full px-8 py-2 top-4">
-      <div className="flex items-center gap-2 text-white">
+      <Link href="/" className="flex items-center gap-2 text-white">
         <svg
           className="rotate-180"
           width="15"
@@ -67,7 +67,7 @@ function NavbarFixed({
           ></path>
         </svg>
         <p className="text-xl text-white">IDEA Clinic</p>
-      </div>
+      </Link>
       <ul className="flex gap-8 items-center text-white/50 ">
         <li className="px-2 text-md transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 duration-300 hover:text-white">
           <Link href={'/team'}>Team</Link>
