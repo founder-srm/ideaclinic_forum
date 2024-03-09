@@ -79,19 +79,17 @@
   overflow-x: hidden;
 }
 
-main::--webkit-scrollbar {
-  width: 0.5rem;
+.scroll-mod {
+  scrollbar-width: thin;
+  scrollbar-color: var(--foreground) var(--background);
+  scroll-behavior: smooth;
+  scroll-snap-align: start;
+  scrollbar-track-color: transparent;
+  scrollbar-arrow-color: transparent;
+  overflow-x: hidden;
 }
 
-main::--webkit-scrollbar-thumb {
-  background-color: var(red);
-  border-radius: 0.25rem;
-}
 
-main::--webkit-scrollbar-track {
-  background-color: var(--background);
-  border-radius: 0.25rem;
-}
 .ts-bg {
   background: rgba(246, 246, 246, 0.36);
   mix-blend-mode: luminosity;

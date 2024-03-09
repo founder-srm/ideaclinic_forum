@@ -2,12 +2,17 @@
 import React, { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { motion, AnimatePresence } from 'framer-motion'
+import AuthButton from '@/components/AuthButton'
 
 interface NavbarScrollProps {
   isScrolling: boolean
 }
 
-export default function Navbar() {
+export default function Navbar( {
+  children,
+}: {
+  children: React.ReactNode
+}) {
   const [isScrolling, setIsScrolling] = useState(false)
 
   const handleScroll = () => {
@@ -31,17 +36,21 @@ export default function Navbar() {
         {isScrolling ? (
           <NavbarScroll isScrolling={isScrolling} />
         ) : (
-          <NavbarFixed />
+          <NavbarFixed children={children} />
         )}
       </AnimatePresence>
     </>
   )
 }
 
-function NavbarFixed() {
+function NavbarFixed({
+  children,
+}: {
+  children: React.ReactNode
+}) {
   return (
     <nav className="fixed z-10 flex justify-between w-full px-8 py-2 top-4">
-      <div className="flex items-center gap-2 text-white">
+      <Link href="/" className="flex items-center gap-2 text-white">
         <svg
           className="rotate-180"
           width="15"
@@ -57,18 +66,18 @@ function NavbarFixed() {
             clip-rule="evenodd"
           ></path>
         </svg>
-        <p className="text-xl text-white">Forum</p>
-      </div>
+        <p className="text-xl text-white">IDEA Clinic</p>
+      </Link>
       <ul className="flex gap-8 items-center text-white/50 ">
         <li className="px-2 text-md transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 duration-300 hover:text-white">
-          <Link href={'/'}>Team</Link>
+          <Link href={'/team'}>Team</Link>
         </li>
         <li className="px-2 text-md transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 duration-300 hover:text-white">
-          <Link href={'/'}>Forum</Link>
+          <Link href={'/forum'}>Forum</Link>
         </li>
       </ul>
       <div className="px-4 py-2 ml-2 text-white bg-black rounded-full text-md transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 duration-300">
-        <Link href={'/login'}>Login/Sign Up</Link>
+        {children}
       </div>
     </nav>
   )
@@ -86,10 +95,10 @@ function NavbarScroll({ isScrolling }: NavbarScrollProps) {
     >
       <ul className="flex items-center">
         <li className="px-2 text-white text-md">
-          <Link href={'/pods'}>Team</Link>
+          <Link href={'/team'}>Team</Link>
         </li>
         <li className="px-2 text-white text-md">
-          <Link href={'/'}>Forum</Link>
+          <Link href={'/forum'}>Forum</Link>
         </li>
         <li className="px-4 py-2 ml-2 text-white bg-black rounded-full text-md ">
           <Link href={'/login'}>Login/Sign Up</Link>

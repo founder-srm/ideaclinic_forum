@@ -2,6 +2,7 @@ import { GeistSans } from "geist/font/sans";
 import "./globals.css";
 import { Toaster } from "@/components/ui/toaster";
 import Navbar from "./Navbar";
+import AuthButton from "@/components/AuthButton";
 
 const defaultUrl = process.env.VERCEL_URL
   ? `https://${process.env.VERCEL_URL}`
@@ -21,7 +22,9 @@ export default function RootLayout({
   return (
     <html lang="en" >
       <body className={GeistSans.className}>
-        {/* <Navbar /> */}
+          <Navbar>
+            <AuthButton />
+          </Navbar>
         {children}
         <Toaster />
       </body>
