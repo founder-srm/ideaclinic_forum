@@ -1,22 +1,17 @@
 'use client'
 import React, { useState, useEffect } from 'react'
 import Link from 'next/link'
-import { motion, AnimatePresence } from 'framer-motion'
-import AuthButton from '@/components/AuthButton'
+import { motion, AnimatePresence, px } from 'framer-motion'
 
 interface NavbarScrollProps {
   isScrolling: boolean
 }
 
-export default function Navbar( {
-  children,
-}: {
-  children: React.ReactNode
-}) {
+export default function Navbar({ children }: { children: React.ReactNode }) {
   const [isScrolling, setIsScrolling] = useState(false)
 
   const handleScroll = () => {
-    if (window.scrollY >= window.innerHeight) {
+    if (window.scrollY >= 30) {
       setIsScrolling(true)
     } else {
       setIsScrolling(false)
@@ -43,11 +38,7 @@ export default function Navbar( {
   )
 }
 
-function NavbarFixed({
-  children,
-}: {
-  children: React.ReactNode
-}) {
+function NavbarFixed({ children }: { children: React.ReactNode }) {
   return (
     <nav className="fixed z-10 flex justify-between w-full px-8 py-2 top-4">
       <Link href="/" className="flex items-center gap-2 text-white">
