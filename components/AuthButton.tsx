@@ -39,27 +39,36 @@ export default async function AuthButton() {
           </Avatar>
         </DropdownMenuTrigger>
         <DropdownMenuContent className="bg-[#333333] text-white m-0 p-0">
-          <DropdownMenuLabel>
-              My Account
-          </DropdownMenuLabel>
+          <DropdownMenuLabel>My Account</DropdownMenuLabel>
           <DropdownMenuSeparator />
           <DropdownMenuItem>
-            <Link href='/account' className="flex items-center">
+            <Link href="/account" className="flex items-center">
               <User className="w-[12px] mr-1" />
               Account
-            </Link>  
+            </Link>
           </DropdownMenuItem>
-          <DropdownMenuItem><PlusCircleIcon className="w-[12px] mr-1"/> New Post</DropdownMenuItem>
-          <DropdownMenuItem >
-            <Link href='/password-change' className="flex items-center ">
+          <DropdownMenuItem>
+            <Link href="/account/firstedit" className="flex items-center">
+              <User className="w-[12px] mr-1" />
+              Edit Account
+            </Link>
+          </DropdownMenuItem>
+          <DropdownMenuItem>
+            <PlusCircleIcon className="w-[12px] mr-1" /> New Post
+          </DropdownMenuItem>
+          <DropdownMenuItem>
+            <Link href="/password-change" className="flex items-center ">
               Change Password
-            </Link> 
+            </Link>
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
 
       <form action="/auth/logout" method="post">
-        <Button variant='outline' className="py-2 px-4 rounded-md hover:text-gray-500 no-underline bg-btn-background hover:bg-btn-background-hover">
+        <Button
+          variant="outline"
+          className="py-2 px-4 rounded-md hover:text-gray-500 no-underline bg-btn-background hover:bg-btn-background-hover"
+        >
           Logout
         </Button>
       </form>
@@ -67,7 +76,7 @@ export default async function AuthButton() {
   ) : (
     <Link href="/login">
       {/* <Button variant='outline' className="py-2 px-4 rounded-md hover:text-gray-500 no-underline bg-btn-background hover:bg-btn-background-hover"> */}
-        Login
+      Login
       {/* </Button> */}
     </Link>
   )
