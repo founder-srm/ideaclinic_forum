@@ -68,7 +68,7 @@ const BlurImage = ({ card }: { card: Card }) => {
       width="500"
       onLoad={() => setLoaded(true)}
       className={cn(
-        "object-cover object-top absolute inset-0 h-full w-full transition duration-200",
+        "object-cover object-center absolute inset-0 h-full w-full transition duration-200",
         loaded ? "blur-none" : "blur-md"
       )}
       alt="thumbnail"

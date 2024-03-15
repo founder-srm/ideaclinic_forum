@@ -2,8 +2,21 @@
 import { LayoutGrid } from "./ui/layout-grid";
 import { useToast } from "@/components/ui/use-toast";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs"
-import { useRouter } from "next/navigation";
-import { useEffect, useMemo, useState, useRef } from "react";
+import {  useMemo, useRef, useState } from "react";
+import { Button } from "./ui/button";
+import { Edit2Icon } from "lucide-react";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+import { Input } from "./ui/input";
 
 interface UserAcc {
     id: string;
@@ -17,30 +30,14 @@ interface UserAcc {
     title: string;
 }
 
-export function LayoutGridDemo() {
+export function LayoutGridDemo({ userId } : { userId: string }) {
 
     const supabase = createClientComponentClient();
-    const router = useRouter();
     const { toast } = useToast();
 
-    const [userId, setuserId] = useState('');
     const [userData, setUserData] = useState<UserAcc | null>(null);
 
     useMemo(() => {
-        const fetchUser = async () => {
-            const {
-                data: { user },
-            } = await supabase.auth.getUser();
-
-            if (user) {
-                console.log("User found");
-                console.log(user);
-                setuserId(user.id);
-            } else {
-                console.log("No user found");
-                router.push("/login");
-            }
-        };
         const getUserData = async () => {
         const { data, error } = await supabase
             .from('profiles')
@@ -66,9 +63,6 @@ export function LayoutGridDemo() {
         }
         }
 
-
-        fetchUser();
-
         if(userId !== '') {
         getUserData();
         }
@@ -93,8 +87,203 @@ export function LayoutGridDemo() {
       };
       // This skeleton displays the username, title and department, the photo will be replaced by the image submitted by the user at later stage
       const SkeletonTwo = () => {
+        const [dragActive, setDragActive] = useState<boolean>(false);
+        const inputRef = useRef<any>(null);
+        const [files, setFiles] = useState<any>([]);
+        const [url, setUrl] = useState<string>('');
+
+        function handleChange(e: any) {
+          e.preventDefault();
+          console.log("File has been added");
+          if (e.target.files && e.target.files[0]) {
+            console.log(e.target.files);
+            for (let i = 0; i < e.target.files["length"]; i++) {
+              setFiles((prevState: any) => [...prevState, e.target.files[i]]);
+            }
+          }
+        }
+
+        const handleSubmitFile = async(e: any) => {
+          if (files.length === 0) {
+            toast({
+              title: "Error",
+              description: "No file has been selected",
+              duration: 5000,
+              variant: "destructive",
+            })
+          } else {
+            const uploadImage = async (file: any) => {
+              const { data, error } = await supabase.storage
+                .from("avatars")
+                .upload(`users/${file.name}`, file, {
+                  cacheControl: '300', // The image will be cached for 5 minutes
+                  upsert: false
+                });
+              if (error) {
+                console.log("Error", error);
+                toast({
+                  title: "Error",
+                  description: error.message,
+                  duration: 5000,
+                  variant: "destructive",
+                });
+              } else {
+                console.log("Data", data);
+                const { data: Publicurl } = supabase
+                  .storage
+                  .from("avatars")
+                  .getPublicUrl(`users/${file.name}`);
+
+                setUrl(Publicurl.publicUrl);
+                toast({
+                  title: "Success",
+                  description: "Image has been uploaded",
+                  duration: 1000,
+                  variant: "success",
+                });
+              }
+            }
+            
+            const updateUrl = async () => {
+              if (url === '') {
+                toast({
+                  title: "Error",
+                  description: "No URL has been found",
+                  duration: 5000,
+                  variant: "destructive",
+                });
+              }
+              const { error } = await supabase
+                .from('profiles')
+                .update({ avatar_url: url })
+                .eq('id', userId);
+              if (error) {
+                console.log('Error', error);
+                toast({
+                  title: "Error",
+                  description: error.message,
+                  duration: 5000,
+                  variant: "destructive",
+                });
+              } else {
+                toast({
+                  title: "Success",
+                  description: "Profile picture has been updated",
+                  duration: 1000,
+                  variant: "success",
+                });
+              }
+            }
+            uploadImage(files[0]).then(() => {
+              updateUrl();
+            }).catch((error) => {
+              console.error('Error uploading image:', error);
+            });
+          }
+        }
+
+        function handleDrop(e: any) {
+          e.preventDefault();
+          e.stopPropagation();
+          setDragActive(false);
+          if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+            for (let i = 0; i < e.dataTransfer.files["length"]; i++) {
+              setFiles((prevState: any) => [...prevState, e.dataTransfer.files[i]]);
+            }
+          }
+        }
+
+        function handleDragLeave(e: any) {
+          e.preventDefault();
+          e.stopPropagation();
+          setDragActive(false);
+        }
+
+        function handleDragOver(e: any) {
+          e.preventDefault();
+          e.stopPropagation();
+          setDragActive(true);
+        }
+
+        function handleDragEnter(e: any) {
+          e.preventDefault();
+          e.stopPropagation();
+          setDragActive(true);
+        }
+
+        function removeFile(fileName: any, idx: any) {
+          const newArr = [...files];
+          newArr.splice(idx, 1);
+          setFiles([]);
+          setFiles(newArr);
+        }
+
+        function openFileExplorer() {
+          inputRef.current.value = "";
+          inputRef.current.click();
+        }
         return (
           <div>
+            
+            <AlertDialog>
+              <AlertDialogTrigger><Button className="absolute z-10 top-4 right-10" variant='ghost'><Edit2Icon/></Button></AlertDialogTrigger>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>Change Profile Picture</AlertDialogTitle>
+                </AlertDialogHeader>
+                  <AlertDialogDescription>
+                    <form
+                      className={`${
+                        dragActive ? "bg-blue-400" : "bg-blue-100"
+                      }  p-4 w-full rounded-lg  min-h-[10rem] text-center flex flex-col items-center justify-center`}
+                      onDragEnter={handleDragEnter}
+                      onSubmit={(e) => e.preventDefault()}
+                      onDrop={handleDrop}
+                      onDragLeave={handleDragLeave}
+                      onDragOver={handleDragOver}
+                    >
+                      <input
+                        placeholder="fileInput"
+                        className="hidden"
+                        ref={inputRef}
+                        type="file"
+                        multiple={false}
+                        onChange={handleChange}
+                        accept="image/*"
+                      />
+
+                      <p>
+                        Drag & Drop files or{" "}
+                        <span
+                          className="font-bold text-blue-600 cursor-pointer"
+                          onClick={openFileExplorer}
+                        >
+                          <u>Select files</u>
+                        </span>{" "}
+                        to upload
+                      </p>
+
+                      <div className="flex flex-col items-center p-3">
+                        {files.map((file: any, idx: any) => (
+                          <div key={idx} className="flex flex-row items-center space-x-5">
+                            <span>{file.name}</span>
+                            <Button
+                              variant='destructive'                              
+                              onClick={() => removeFile(file.name, idx)}
+                            >
+                              remove
+                            </Button>
+                          </div>
+                        ))}
+                      </div>
+                    </form>
+                  </AlertDialogDescription>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>Cancel</AlertDialogCancel>
+                  <Button onClick={handleSubmitFile} variant='outline'>Submit</Button>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
             <p className="font-bold text-4xl text-white">{userData && userData.username}</p>
             <p className="font-normal text-base text-white"></p>
             <p className="font-normal text-base my-4 max-w-lg text-neutral-200">
@@ -143,35 +332,35 @@ export function LayoutGridDemo() {
           content: <SkeletonOne />,
           className: "md:col-span-2",
           thumbnail:
-            "https://images.unsplash.com/photo-1472289065668-ce650ac443d2?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8d3JpdGluZyUyMGhkJTIwaW1hZ2V8ZW58MHx8MHx8fDA%3D",
+            '/myposts.svg',
         },
         {
           id: 2,
           content: <SkeletonTwo />,
           className: "col-span-1",
           thumbnail:
-            "https://images.unsplash.com/photo-1564564321837-a57b7070ac4f?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8OHx8bWFufGVufDB8fDB8fHww",
+          userData && userData.avatar_url ? userData.avatar_url : "https://images.unsplash.com/photo-1564564321837-a57b7070ac4f?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8OHx8bWFufGVufDB8fDB8fHww",
         },
         {
           id: 3,
           content: <SkeletonThree />,
           className: "col-span-1",
           thumbnail:
-            "https://images.unsplash.com/photo-1577563908411-5077b6dc7624?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NDR8fGdyYXBofGVufDB8fDB8fHww",
+            "/stats.svg",
         },
         {
           id: 4,
           content: <SkeletonFour />,
           className: "md:col-span-2",
           thumbnail:
-            "https://images.unsplash.com/photo-1475070929565-c985b496cb9f?q=80&w=3540&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+            "/aboutme.svg",
         },
       ];
 
     return (
         // This are some basic tailwind classes added to the wrapper div
         <div className="h-screen py-20 w-full">
-        <LayoutGrid cards={cards} />
+          <LayoutGrid cards={cards} />
         </div>
     );
 }

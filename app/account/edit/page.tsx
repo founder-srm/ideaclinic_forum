@@ -21,7 +21,7 @@ import {
 // import { cookies } from "next/headers";
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 
@@ -51,14 +51,33 @@ const accountSchema = z.object({
   }),
 })
 
+interface UserAcc {
+  id: string;
+  username: string;
+  full_name: string;
+  email: string;
+  avatar_url: string;
+  updated_at: string;
+  dept: string;
+  bio: string;
+  title: string;
+}
+
 export default function Page() {
   // const cookieStore = cookies()
   const supabase = createClientComponentClient()
-
+  const { toast } = useToast();
+  const router = useRouter()
   const [userId, setUserId] = useState('')
   const [emailId, setEmailId] = useState('')
+  const [username, setUsername] = useState('')
+  const [ full_name, setFull_name] = useState('')
+  const [ dept, setDept] = useState('')
+  const [ title, setTitle] = useState('')
+  const [ bio, setBio] = useState('')
+  const [ avatar_url, setAvatar_url] = useState('')
 
-  useEffect(() => {
+  useMemo(() => {
     const fetchUser = async () => {
       const {
         data: { user },
@@ -74,23 +93,65 @@ export default function Page() {
         return <div>No user found</div>
       }
     }
+    const getUserData = async () => {
+      const { data , error } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('id', userId)
+
+      if (error) {
+        console.log(error)
+        toast({
+          variant: 'destructive',
+          title: 'Uh oh! Something went wrong.',
+          description: 'There was a problem with your update.',
+          action: (
+            <ToastAction onClick={() => router.refresh()} altText="Try again">
+              Try again
+            </ToastAction>
+          ),
+        })
+      }
+      if (!data) {
+        console.log(error)
+        toast({
+          variant: 'destructive',
+          title: 'Uh oh! Something went wrong.',
+          description: 'There was a problem with your update.',
+          action: (
+            <ToastAction onClick={() => router.refresh()} altText="Try again">
+              Try again
+            </ToastAction>
+          ),
+        })        
+      }
+      else {        
+        console.log('data', data || 'No data')
+        setUsername(data[0].username)
+        setFull_name(data[0].full_name)
+        setDept(data[0].dept)
+        setTitle(data[0].title)
+        setBio(data[0].bio)
+        setAvatar_url(data[0].avatar_url)
+        form.reset({
+          username: data[0].username,
+          full_name: data[0].full_name || '',
+          dept: data[0].dept || '',
+          title: data[0].title || '',
+          bio: data[0].bio || '',
+        });
+      }
+    }
 
     fetchUser()
-  }, [])
+    if (userId) {
+      getUserData()
+    }
+  }, [userId])
 
-  const { toast } = useToast()
-  const router = useRouter()
 
   const form = useForm<z.infer<typeof accountSchema>>({
     resolver: zodResolver(accountSchema),
-    defaultValues: {
-      username: '',
-      full_name: '',
-      dept: '',
-      title: '',
-      bio: '',
-      email: '',
-    },
   })
   const onSubmit = async (values: z.infer<typeof accountSchema>) => {
     console.log(values)
@@ -129,7 +190,7 @@ export default function Page() {
           description: 'Your profile has been updated.',
         })
 
-        // router.push('/password-change')
+        router.push('/account')
       }
 
       console.log(data)
@@ -163,10 +224,10 @@ export default function Page() {
         </Link>
         <div className="max-w-md w-full rounded-none md:rounded-2xl my-6 md:my-12 p-6 md:p-8 shadow-input text-white bg-black">
           <h2 className="font-bold text-xl text-neutral-200">
-            Welcome to Idea clinic!
+            Edit your account
           </h2>
           <p className="text-neutral-500 text-sm max-w-sm mt-2 dark:text-neutral-300">
-            Add your details to get started.
+            You can edit your account details here
           </p>
 
           <div className="flex flex-col space-y-2 md:space-y-0 md:space-x-2 my-4">
