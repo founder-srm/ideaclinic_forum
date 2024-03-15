@@ -1,9 +1,8 @@
 
-import { createClientComponentClient, createServerComponentClient } from "@supabase/auth-helpers-nextjs";
+import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
 import Link from "next/link";
-import { redirect } from "next/navigation";
+
 import { Button } from "./ui/button";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -14,6 +13,8 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { PlusCircleIcon, User } from "lucide-react";
 import { cookies } from "next/headers";
+import AvatarComponent from "./Avatar";
+
 
 export default async function AuthButton() {
   const cookieStore = cookies()
@@ -27,16 +28,14 @@ export default async function AuthButton() {
   } = await supabase.auth.getUser()
 
   
+  
 
   return session && user ? (
     <div className="flex flex-row items-center justify-end gap-4">
       {user.email}
       <DropdownMenu>
         <DropdownMenuTrigger>
-          <Avatar>
-            <AvatarImage src="https://github.com/shadcn.png" />
-            <AvatarFallback>CN</AvatarFallback>
-          </Avatar>
+          <AvatarComponent userId={user.id} />
         </DropdownMenuTrigger>
         <DropdownMenuContent className="bg-[#333333] text-white m-0 p-0">
           <DropdownMenuLabel>My Account</DropdownMenuLabel>

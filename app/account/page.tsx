@@ -77,10 +77,8 @@ export default function Page() {
   
 
   return (
-    <div>
-      <section className="bg-[#090909]">
-        <LayoutGridDemo userId={userId} />
-      </section>
-    </div>
+    <section className="bg-[#090909]">
+      <LayoutGridDemo userId={userId} />
+    </section>
   )
 }
