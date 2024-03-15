@@ -1,4 +1,5 @@
 'use client'
+import { LayoutGridDemo } from "@/components/LayoutGridDemo";
 import { useToast } from "@/components/ui/use-toast";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs"
 import { useRouter } from "next/navigation";
@@ -77,9 +78,9 @@ export default function Page() {
 
   return (
     <div>
-      <h1>Account</h1>
-      <p>Account page</p>
-      <p className="text-black">{userData && userData.full_name}</p>
+      <section className="bg-[#090909]">
+        <LayoutGridDemo />
+      </section>
     </div>
   )
 }

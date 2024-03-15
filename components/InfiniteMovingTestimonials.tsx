@@ -6,8 +6,8 @@ import { InfiniteMovingCards } from "./ui/infinite-moving-cards";
 const testimonials = [
   {
     quote:
-      "The tech team is awesome, the website is so cool! :)",
-    name: "Sir Suvan Makkad",
+      "Mann",
+    name: "Sir Suvan GS",
     title: "Founders Club Tech Lead",
   },
   {
