@@ -48,7 +48,7 @@ export default async function AuthButton() {
             </Link>
           </DropdownMenuItem>
           <DropdownMenuItem>
-            <Link href="/account/firstedit" className="flex items-center">
+            <Link href="/account/edit" className="flex items-center">
               <User className="w-[12px] mr-1" />
               Edit Account
             </Link>

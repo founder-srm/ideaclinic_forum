@@ -17,30 +17,15 @@ interface UserAcc {
     title: string;
 }
 
-export function LayoutGridDemo() {
+export function LayoutGridDemo({ userId } : { userId: string }) {
 
     const supabase = createClientComponentClient();
     const router = useRouter();
     const { toast } = useToast();
 
-    const [userId, setuserId] = useState('');
     const [userData, setUserData] = useState<UserAcc | null>(null);
 
     useMemo(() => {
-        const fetchUser = async () => {
-            const {
-                data: { user },
-            } = await supabase.auth.getUser();
-
-            if (user) {
-                console.log("User found");
-                console.log(user);
-                setuserId(user.id);
-            } else {
-                console.log("No user found");
-                router.push("/login");
-            }
-        };
         const getUserData = async () => {
         const { data, error } = await supabase
             .from('profiles')
@@ -65,9 +50,6 @@ export function LayoutGridDemo() {
             })
         }
         }
-
-
-        fetchUser();
 
         if(userId !== '') {
         getUserData();
@@ -143,7 +125,7 @@ export function LayoutGridDemo() {
           content: <SkeletonOne />,
           className: "md:col-span-2",
           thumbnail:
-            "https://images.unsplash.com/photo-1472289065668-ce650ac443d2?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8d3JpdGluZyUyMGhkJTIwaW1hZ2V8ZW58MHx8MHx8fDA%3D",
+            '/myposts.svg',
         },
         {
           id: 2,
@@ -157,21 +139,21 @@ export function LayoutGridDemo() {
           content: <SkeletonThree />,
           className: "col-span-1",
           thumbnail:
-            "https://images.unsplash.com/photo-1577563908411-5077b6dc7624?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NDR8fGdyYXBofGVufDB8fDB8fHww",
+            "/stats.svg",
         },
         {
           id: 4,
           content: <SkeletonFour />,
           className: "md:col-span-2",
           thumbnail:
-            "https://images.unsplash.com/photo-1475070929565-c985b496cb9f?q=80&w=3540&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+            "/aboutme.svg",
         },
       ];
 
     return (
         // This are some basic tailwind classes added to the wrapper div
         <div className="h-screen py-20 w-full">
-        <LayoutGrid cards={cards} />
+          <LayoutGrid cards={cards} />
         </div>
     );
 }

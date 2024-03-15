@@ -79,7 +79,7 @@ export default function Page() {
   return (
     <div>
       <section className="bg-[#090909]">
-        <LayoutGridDemo />
+        <LayoutGridDemo userId={userId} />
       </section>
     </div>
   )
