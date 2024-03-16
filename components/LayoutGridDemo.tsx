@@ -54,7 +54,7 @@ export function LayoutGridDemo({ userId } : { userId: string }) {
             })
         }
         else {
-            console.log('data', data || 'No data')
+            // console.log('data', data || 'No data')
             setUserData(data[0]);
             toast({
             title: `Welcome`,
@@ -90,13 +90,13 @@ export function LayoutGridDemo({ userId } : { userId: string }) {
         const [dragActive, setDragActive] = useState<boolean>(false);
         const inputRef = useRef<any>(null);
         const [files, setFiles] = useState<any>([]);
-        const [url, setUrl] = useState<string>('');
+        const [Url, setUrl] = useState<string>('');
 
         function handleChange(e: any) {
           e.preventDefault();
-          console.log("File has been added");
+          // console.log("File has been added");
           if (e.target.files && e.target.files[0]) {
-            console.log(e.target.files);
+            // console.log(e.target.files);
             for (let i = 0; i < e.target.files["length"]; i++) {
               setFiles((prevState: any) => [...prevState, e.target.files[i]]);
             }
@@ -112,12 +112,13 @@ export function LayoutGridDemo({ userId } : { userId: string }) {
               variant: "destructive",
             })
           } else {
+            const filename = `${userId}.${files[0].name.split('.').pop()}`;
             const uploadImage = async (file: any) => {
               const { data, error } = await supabase.storage
                 .from("avatars")
-                .upload(`users/${file.name}`, file, {
+                .upload(`users/${filename}`, file, {
                   cacheControl: '300', // The image will be cached for 5 minutes
-                  upsert: false
+                  upsert: true
                 });
               if (error) {
                 console.log("Error", error);
@@ -128,13 +129,6 @@ export function LayoutGridDemo({ userId } : { userId: string }) {
                   variant: "destructive",
                 });
               } else {
-                console.log("Data", data);
-                const { data: Publicurl } = supabase
-                  .storage
-                  .from("avatars")
-                  .getPublicUrl(`users/${file.name}`);
-
-                setUrl(Publicurl.publicUrl);
                 toast({
                   title: "Success",
                   description: "Image has been uploaded",
@@ -144,15 +138,7 @@ export function LayoutGridDemo({ userId } : { userId: string }) {
               }
             }
             
-            const updateUrl = async () => {
-              if (url === '') {
-                toast({
-                  title: "Error",
-                  description: "No URL has been found",
-                  duration: 5000,
-                  variant: "destructive",
-                });
-              }
+            const updateUrl = async (url : string) => {
               const { error } = await supabase
                 .from('profiles')
                 .update({ avatar_url: url })
@@ -168,14 +154,28 @@ export function LayoutGridDemo({ userId } : { userId: string }) {
               } else {
                 toast({
                   title: "Success",
-                  description: "Profile picture has been updated",
+                  description: "Profile picture has been updated \n Please refresh the page to see the changes",
                   duration: 1000,
                   variant: "success",
                 });
               }
             }
+
             uploadImage(files[0]).then(() => {
-              updateUrl();
+              if (Url === '') {
+
+                const { data: Publicurl } = supabase
+                  .storage
+                  .from("avatars")
+                  .getPublicUrl(`users/${filename}`);
+
+                setUrl(Publicurl.publicUrl);
+                updateUrl(Publicurl.publicUrl);
+                // updateUrl(Url);
+              }
+              if (Url !== '') {
+                updateUrl(Url);
+              }
             }).catch((error) => {
               console.error('Error uploading image:', error);
             });
