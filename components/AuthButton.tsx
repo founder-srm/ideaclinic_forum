@@ -11,7 +11,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { PlusCircleIcon, User } from "lucide-react";
+import { PlusCircleIcon, User, UserCog } from "lucide-react";
 import { cookies } from "next/headers";
 import AvatarComponent from "./Avatar";
 
@@ -41,19 +41,21 @@ export default async function AuthButton() {
           <DropdownMenuLabel>My Account</DropdownMenuLabel>
           <DropdownMenuSeparator />
           <DropdownMenuItem>
-            <Link href="/account" className="flex items-center">
+            <Link href="/account" className="flex items-center gap-1">
               <User className="w-[12px] mr-1" />
               Account
             </Link>
           </DropdownMenuItem>
           <DropdownMenuItem>
-            <Link href="/account/edit" className="flex items-center">
-              <User className="w-[12px] mr-1" />
+            <Link href="/account/edit" className="flex items-center gap-1">
+              <UserCog className="w-[12px] mr-1" />
               Edit Account
             </Link>
           </DropdownMenuItem>
           <DropdownMenuItem>
-            <PlusCircleIcon className="w-[12px] mr-1" /> New Post
+            <Link href='/forum/create-post' className="flex items-center gap-1">
+              <PlusCircleIcon className="w-[12px] mr-1" /> New Post
+            </Link>
           </DropdownMenuItem>
           <DropdownMenuItem>
             <Link href="/password-change" className="flex items-center ">
